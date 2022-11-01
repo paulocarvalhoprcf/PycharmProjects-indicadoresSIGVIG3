@@ -1,0 +1,122 @@
+import csv
+
+operacao = int(input('''Qual o tipo de operação deseja pesquisar: exportação ou importação?
+Digite [1] para exportação ou [2] para importação.\n'''))
+
+usoPropostoVegetal = ("produto vegetal para consumo direto", "embalagem e suportes de madeira", "material de pesquisa de origem vegetal", "agente para controle biológico", "vinhos e derivados da uva e do vinho", "máquinas agrícolas",
+                      "produto vegetal industrializado", "produto vegetal in natura", "agrotóxico", "material para propagação vegetal", "fertilizante", "bebidas em geral", "corretivo", "inoculante")
+
+usoPropostoAnimal = ("animal vivo doméstico de companhia", "animal vivo para cria", "animal vivo para abate", "animal vivo para engorda", "produto de origem animal comestível", "outros produtos destinados à alimentação animal",
+                     "animal vivo para esporte", "animal vivo para exposição e espetáculo", "animal vivo para pesquisa", "animal vivo para reprodução", "animal vivo para zoológico", "material de pesquisa de origem animal", "material de multiplicação animal",
+                     "produto de uso veterinário", "produto biológico", "produto de origem animal não comestível para industrialização", "produto de origem animal não comestível para fins opoterápicos", "troféu de caça e taxidermia", "produto de origem vegetal destinado à alimentação animal")
+
+if operacao == 2:
+
+    uso_proposto = int(input('''Qual área agropecuária deseja pesquisar?
+Digite [1] para animal ou [2] para vegetal.\n'''))
+    if uso_proposto == 1:
+        for i in usoPropostoAnimal:
+            print(f"{usoPropostoAnimal.index(i) + 1} - {i}")
+        print("Qual dos usos propostos deseja pesquisar?")
+        uso = usoPropostoAnimal[int(input()) - 1]
+        print(uso)
+
+    elif uso_proposto == 2:
+        for i in usoPropostoVegetal:
+            print(f"{usoPropostoVegetal.index(i) + 1} - {i}")
+        print("Qual dos usos propostos deseja pesquisar?")
+        uso = usoPropostoVegetal[int(input()) - 1]
+        print(uso)
+
+    produto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
+
+    def buscaImportacaoVegetal(produto):
+
+        tabela = csv.reader(open(), delimiter=';')
+        c = 0
+        p = 0
+        u = 0
+        for linha in tabela:
+            c += 1
+            mercadoria = linha[0]
+            if produto in mercadoria.lower():
+                p += 1
+            if uso in mercadoria.lower():
+                u += 1
+        print(f"Este arquivo possui {c - 1} LPCOs de importação.")
+        if p > 0:
+            print(f"Foram detectadas {p} LPCOs contendo {produto}.")
+        else:
+            print(f"O produto {produto} não foi encontrado na base de dados.")
+        if u > 0:
+            print(f"Foram encontradas {u} LPCOs contendo a expressão '{uso}' na descrição da mercadoria.")
+        else:
+            print(f"O uso proposto {uso} não foi encontrado na base de dados.")
+
+    buscaImportacaoVegetal(produto)
+
+elif operacao == 1:
+
+    area = int(input('''Qual área agropecuária deseja pesquisar?
+Digite [1] para animal ou [2] para vegetal.\n'''))
+
+    produto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
+
+    if area == 1:
+
+        def buscaExportacaoAnimal(produto):
+
+            tabela = csv.reader(open(), delimiter=';')
+            c = 0
+            p = 0
+            for linha in tabela:
+                c += 1
+                mercadoria = linha[0]
+                if produto in mercadoria.lower():
+                    p += 1
+            print(f"Este arquivo possui {c - 1} LPCOs.")
+            if p > 0:
+                print(f"Foram detectadas {p} LPCOs contendo a expressão '{produto}' na descrição da mercadoria.")
+            else:
+                print(f"O produto {produto} não foi encontrado na base de dados.")
+
+        buscaExportacaoAnimal(produto)
+
+    elif area == 2:
+
+        pais = input("Qual destino deseja pesquisar na base de dados?\n").lower()
+
+        fiscal = input("Qual o nome do AFFA?\n").lower()
+
+        def buscaExportacaoVegetal(pais, fiscal, produto):
+
+            tabela = csv.reader(open(), delimiter=';')
+            c = 0
+            n = 0
+            f = 0
+            p = 0
+
+            for linha in tabela:
+                c += 1
+                dados = linha[0]
+                if pais in dados.lower():
+                    n += 1
+                if fiscal in dados.lower():
+                    f += 1
+                if produto in dados.lower():
+                    p += 1
+            print(f"Este arquivo possui {c - 1} LPCOs.")
+            if n > 0:
+                print(f"Foram detectadas {n} LPCOs contendo a expressão '{pais}' na descrição da mercadoria.")
+            else:
+                print(f"O produto {pais} não foi encontrado na base de dados.")
+            if f > 0:
+                print(f"Foram detectadas {f} LPCOs deferidas pelo AFFA {fiscal}.")
+            else:
+                print(f"Não foram encontrados LPCOs deferidas pelo AFFA {fiscal} na base de dados.")
+            if p > 0:
+                print(f"Foram detectadas {p} LPCOs contendo a expressão '{produto}' na descrição da mercadoria.")
+            else:
+                print(f"O produto {produto} não foi encontrado na base de dados.")
+
+        buscaExportacaoVegetal(pais, fiscal, produto)
