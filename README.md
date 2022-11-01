@@ -1,6 +1,6 @@
 #Código para extração de alguns indicadores do SIGVIG3.
 
-#Para utilização deste código, será necessário acesso ao perfil de extração do SIGVIG3.
+#Para utilização deste código, será necessário acesso ao perfil de extração do SIGVIG3. Os arquivos a serem baixados são: 'extracao_dados_impo_pov_20221027.csv', 'extracao_dados_poa_20221031.csv', 'sigvig3_fitos_20221011.csv'.
 
 #Após acesso ao perfil de extração do SIGVIG3, os arquivos devem ser salvos nem uma pasta de temporários (caso do OS Windows) ou na pasta Downloads, no iOS Mac.
 
