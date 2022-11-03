@@ -1,4 +1,6 @@
 import csv
+import arquivo
+from time import sleep
 
 operacao = int(input('''Qual o tipo de operação deseja pesquisar: exportação ou importação?
 Digite [1] para exportação ou [2] para importação.\n'''))
@@ -32,7 +34,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
 
     def buscaImportacaoVegetal(produto):
 
-        tabela = csv.reader(open(), delimiter=';')
+        tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_2}'), delimiter=';')
         c = 0
         p = 0
         u = 0
@@ -60,13 +62,13 @@ elif operacao == 1:
     area = int(input('''Qual área agropecuária deseja pesquisar?
 Digite [1] para animal ou [2] para vegetal.\n'''))
 
-    produto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
-
     if area == 1:
+
+        produto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
 
         def buscaExportacaoAnimal(produto):
 
-            tabela = csv.reader(open(), delimiter=';')
+            tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_3}'), delimiter=';')
             c = 0
             p = 0
             for linha in tabela:
@@ -84,39 +86,130 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
 
     elif area == 2:
 
-        pais = input("Qual destino deseja pesquisar na base de dados?\n").lower()
+        menu = True
 
-        fiscal = input("Qual o nome do AFFA?\n").lower()
+        while menu:
 
-        def buscaExportacaoVegetal(pais, fiscal, produto):
+            tipoPesquisa = int(input('''Qual o tipo de pesquisa deseja fazer?
+Digite [1] para pesquisar quantas LPCOs foram registradas na base de dados.
+Digite [2] para pesquisar na base de dados por AFFA
+Digite [3] para pesquisar por países de destino na base de dados.
+Digite [4] para realizar pesquisas combinadas dos dois parâmetros anteriores.\n'''))
 
-            tabela = csv.reader(open(), delimiter=';')
-            c = 0
-            n = 0
-            f = 0
-            p = 0
+            if tipoPesquisa == 1:
 
-            for linha in tabela:
-                c += 1
-                dados = linha[0]
-                if pais in dados.lower():
-                    n += 1
-                if fiscal in dados.lower():
-                    f += 1
-                if produto in dados.lower():
-                    p += 1
-            print(f"Este arquivo possui {c - 1} LPCOs.")
-            if n > 0:
-                print(f"Foram detectadas {n} LPCOs contendo a expressão '{pais}' na descrição da mercadoria.")
-            else:
-                print(f"O produto {pais} não foi encontrado na base de dados.")
-            if f > 0:
-                print(f"Foram detectadas {f} LPCOs deferidas pelo AFFA {fiscal}.")
-            else:
-                print(f"Não foram encontrados LPCOs deferidas pelo AFFA {fiscal} na base de dados.")
-            if p > 0:
-                print(f"Foram detectadas {p} LPCOs contendo a expressão '{produto}' na descrição da mercadoria.")
-            else:
-                print(f"O produto {produto} não foi encontrado na base de dados.")
+                def buscaExportacaoPorQuantidade():
 
-        buscaExportacaoVegetal(pais, fiscal, produto)
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'), delimiter=';')
+                    c = 0
+
+                    for linha in tabela:
+                        c += 1
+
+                    print(f"Este arquivo possui {c - 1} LPCOs de exportação.")
+
+                buscaExportacaoPorQuantidade()
+
+                pergunta = input("Deseja voltar ao menu inicial?\nDigite 'S' para voltar:\n").lower()
+
+                sleep(1)
+
+                if pergunta != 's':
+                    menu = False
+
+            elif tipoPesquisa == 2:
+
+                qualFiscal = input("Qual AFFA deseja pesquisar na base de dados?\n").lower()
+
+                def buscaExportacaoVegetalPorFiscal(fiscal):
+
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'))
+                    f = 0
+                    nomeCompleto = ""
+
+                    for linha in tabela:
+                        dados = linha[3]
+                        if fiscal in dados.lower():
+                            f += 1
+                            nomeCompleto = f"{dados}"
+
+                    if f > 0:
+                        print("Foram detectadas {} LPCOs deferidas pelo AFFA {}.".format(f, nomeCompleto))
+                    else:
+                        print("Não foram encontrados LPCOs deferidas pelo AFFA {} na base de dados.".format(fiscal))
+
+                buscaExportacaoVegetalPorFiscal(qualFiscal)
+
+                pergunta = input("Deseja voltar ao menu inicial?\nDigite 'S' para voltar:\n").lower()
+
+                sleep(1)
+
+                if pergunta != 's':
+                    menu = False
+
+            elif tipoPesquisa == 3:
+
+                qualPais = input("Qual o país de destino deseja pesquisar na base de dados?\n").lower()
+
+                def buscaExportacaoPorPais(pais):
+
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'))
+                    p = 0
+                    nomePais = ""
+
+                    for linha in tabela:
+                        dados = linha[10]
+                        if pais in dados.lower():
+                            p += 1
+                            nomePais = f"{dados}"
+
+                    if p > 0:
+                        print("Foram detectadas {} LPCOs contendo o país {} na descrição da mercadoria.".format(p, nomePais))
+                    else:
+                        print("O país de destino {} não foi encontrado na base de dados.".format(pais))
+
+                buscaExportacaoPorPais(qualPais)
+
+                sleep(1)
+
+                pergunta = input("Deseja voltar ao menu inicial?\nDigite 'S' para voltar:\n").lower()
+
+                if pergunta != 's':
+                    menu = False
+
+            elif tipoPesquisa == 4:
+
+                qualFiscal = input("Qual AFFA deseja pesquisar na base de dados?\n").lower()
+                qualPais = input("Qual destino deseja pesquisar na base de dados?\n").lower()
+
+
+                def buscaExportacaoVegetalCombinada(fiscal, pais):
+
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'))
+                    n = 0
+                    nomeCompleto = ""
+                    nomePais = ""
+
+
+                    for linha in tabela:
+                        dados1 = linha[3]
+                        dados2 = linha[10]
+                        if fiscal in dados1.lower() and pais in dados2.lower():
+                            n += 1
+                            nomeCompleto = f"{dados1}"
+                            nomePais = f"{dados2}"
+
+                    if n > 0:
+                        print("Foram detectadas {} LPCOs deferidas pelo AFFA {}, contendo coletivamente o país de destino {}.".format(n, nomeCompleto, nomePais))
+                    else:
+                        print("Não foram encontradas combinações na base de dados.")
+
+                buscaExportacaoVegetalCombinada(qualFiscal, qualPais)
+
+                sleep(1)
+
+                pergunta = input("Deseja voltar ao menu inicial?\nDigite 'S' para voltar:\n").lower()
+
+                if pergunta != 's':
+                    menu = False
+
