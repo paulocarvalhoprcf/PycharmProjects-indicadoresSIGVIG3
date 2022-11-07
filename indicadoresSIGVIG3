@@ -1,10 +1,7 @@
 import csv
-
-from numpy import info
-
-import arquivo
-from time import sleep
 from datetime import datetime
+from time import sleep
+
 from tabulate import tabulate
 
 operacao = int(input('''Qual o tipo de operação deseja pesquisar: exportação ou importação?
@@ -28,6 +25,10 @@ usoPropostoAnimal = (
 "produto de origem animal não comestível para fins opoterápicos", "troféu de caça e taxidermia",
 "produto de origem vegetal destinado à alimentação animal")
 
+arquivo_1 = 'extracao_dados_pov.csv'
+arquivo_2 = 'extracao_dados_impo_pov.csv'
+arquivo_3 = 'extracao_dados_poa.csv'
+
 if operacao == 1:
 
     area = int(input('''Qual área agropecuária deseja pesquisar?
@@ -40,7 +41,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
 
         def buscaExportacaoAnimal(produto):
 
-            tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_3}'), delimiter=';')
+            tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_3}'))
             c = 0
             p = 0
             for linha in tabela:
@@ -73,7 +74,7 @@ Digite [4] para realizar pesquisas combinadas dos dois parâmetros anteriores.\n
 
                 def buscaExportacaoPorQuantidade():
 
-                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'))
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_1}'))
                     c = 0
 
                     for linha in tabela:
@@ -98,7 +99,7 @@ Digite [4] para realizar pesquisas combinadas dos dois parâmetros anteriores.\n
 
                 def buscaExportacaoVegetalPorFiscal(fiscal):
 
-                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'))
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_1}'))
                     f = 0
                     nomeCompleto = ""
 
@@ -130,7 +131,7 @@ Digite [4] para realizar pesquisas combinadas dos dois parâmetros anteriores.\n
 
                 def buscaExportacaoPorPais(pais):
 
-                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'))
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_1}'))
                     p = 0
                     nomePais = ""
 
@@ -164,7 +165,7 @@ Digite [4] para realizar pesquisas combinadas dos dois parâmetros anteriores.\n
 
                 def buscaExportacaoVegetalCombinada(fiscal, pais):
 
-                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'))
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_1}'))
                     n = 0
                     nomeCompleto = ""
                     nomePais = ""
@@ -217,7 +218,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
 
     def buscaImportacaoVegetal(produto):
 
-        tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_2}'))
+        tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_2}'))
         c = 0
         p = 0
         u = 0
@@ -242,7 +243,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
 
 elif operacao == 3:
 
-# Utilizar data para pesquisa na base de dados no formato dd/mm/aa
+# Utilizar data no formato dd/mm/aa
     dataInicio = input("Qual a data do início do período de pesquisa?\n")
     dataFim = input("Qual a data do final do período de pesquisa?\n")
 
@@ -251,30 +252,30 @@ elif operacao == 3:
         minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
         minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
 
-        tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_3}'))
+        tabela1 = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_3}'))
         nea = 0
 
-        for linha in tabela:
+        for linha in tabela1:
             if linha[5] != "Data de Recebimento":
                 dataRecebimento = linha[5][0:8]
                 minhaDataRecebimento = datetime.strptime(dataRecebimento, "%d/%m/%y")
                 if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim:
                     nea += 1
 
-        tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_1}'))
+        tabela2 = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_1}'))
         nev = 0
 
-        for linha in tabela:
-            if linha[5] != "DATA/HORA RECEBIMENTO DAT":
-                dataRecebimento = linha[5][0:8]
+        for linha in tabela2:
+            if (linha[0].split(',')[5]) != '"Data de Recebimento"':
+                dataRecebimento = linha[0].split(',')[5][1:9]
                 minhaDataRecebimento = datetime.strptime(dataRecebimento, "%d/%m/%y")
                 if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim:
                     nev += 1
 
-        tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_2}'))
+        tabela3 = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_2}'))
         nia = 0
 
-        for linha in tabela:
+        for linha in tabela3:
             if linha[24] != "Data de Recebimento":
                 dataRecebimento = linha[24][0:8]
                 minhaDataRecebimento = datetime.strptime(dataRecebimento, "%d/%m/%y")
@@ -282,10 +283,10 @@ elif operacao == 3:
                     if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim and i in linha[11].lower():
                         nia += 1
 
-        tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo.arquivo_2}'))
+        tabela3 = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_2}'))
         niv = 0
 
-        for linha in tabela:
+        for linha in tabela3:
             if linha[24] != "Data de Recebimento":
                 dataRecebimento = linha[24][0:8]
                 minhaDataRecebimento = datetime.strptime(dataRecebimento, "%d/%m/%y")
@@ -303,4 +304,5 @@ elif operacao == 3:
         print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
 
     buscaRelatorioTotalPorPeriodo(dataInicio, dataFim)
+
     
