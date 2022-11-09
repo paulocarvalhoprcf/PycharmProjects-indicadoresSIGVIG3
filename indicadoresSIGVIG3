@@ -455,3 +455,4 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
             menuAnimalVegetal = False
             menuVegetal = False
             menuAnimal = False
+            
