@@ -380,10 +380,33 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
             dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
             dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
 
+            def checarTamanhoDatas(dataInicio, dataFim):
+
+                while len(dataInicio) != 8 and len(dataFim) != 8:
+                    print("---------------------------------------------------------------------------------")
+                    print("As datas de início e do final do período de pesquisa devem ter o formato dd/mm/aa")
+                    print("---------------------------------------------------------------------------------")
+                    dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                    dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+
+            checarTamanhoDatas(dataInicio, dataFim)
+
             def buscaRelatorioTotalPorPeriodo(dataInicio, dataFim):
 
                 minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
                 minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+
+                while minhaDataInicio > minhaDataFim:
+
+                    print("---------------------------------------------------------------------------------")
+                    print("A data de início do período de pesquisa deve ser anterior ao do final do período")
+                    print("---------------------------------------------------------------------------------")
+                    dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                    dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+
+                    checarTamanhoDatas(dataInicio, dataFim)
+
+                buscaRelatorioTotalPorPeriodo(dataInicio, dataFim)
 
                 tabela1 = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_3}'))
                 nea = 0
@@ -454,5 +477,4 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
             menuGeral = False
             menuAnimalVegetal = False
             menuVegetal = False
-            menuAnimal = False
-            
+            menuAnimal = False          
