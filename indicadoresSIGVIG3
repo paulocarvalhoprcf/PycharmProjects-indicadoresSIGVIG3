@@ -272,7 +272,8 @@ Digite [5] para retornar ao menu principal.\n'''))
         elif operacao == 2:
 
             uso_proposto = int(input('''Qual área agropecuária deseja pesquisar?
-Digite [1] para animal ou [2] para vegetal.\n'''))
+Digite [1] para animal ou [2] para vegetal.
+Digite [3] para pesquisar por NCM.\n'''))
             if uso_proposto == 1:
                 qualArea = "Animal"
                 for i in usoPropostoAnimal:
@@ -289,87 +290,111 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
                 uso = usoPropostoVegetal[int(input()) - 1]
                 print(uso)
 
-            produto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
-
-            if uso_proposto == 1:
-                hashAnimal = {}
-
-                i = 0
-                for i in usoPropostoAnimal:
-                    hashAnimal[i] = 0
-
-                l = 0
-                somaAnimal = 0
-                for u in usoPropostoAnimal:
-                    res = list(hashAnimal.keys())[l]
-                    tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
-                    n = 0
-                    for linha in tabela:
-                        usoProposto = linha[11]
-                        if res in usoProposto.lower():
-                            n += 1
-                    hashAnimal[res] = n
-                    l += 1
-
-                    somaAnimal += n
-
-            elif uso_proposto == 2:
-
-                hashVegetal = {}
-
-                i = 0
-                for i in usoPropostoVegetal:
-                    hashVegetal[i] = 0
-
-                l = 0
-                somaVegetal = 0
-                for u in usoPropostoVegetal:
-                    res = list(hashVegetal.keys())[l]
-                    tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
-                    n = 0
-                    for linha in tabela:
-                        usoProposto = linha[11]
-                        if res in usoProposto.lower():
-                            n += 1
-                    hashVegetal[res] = n
-                    l += 1
-
-                    somaVegetal += n
-
-            def buscaImportacaoVegetal(produto):
+            elif uso_proposto == 3:
+                ncm = input("Qual NCM deseja pesquisar?\n")
 
                 tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
-                p = 0
-                u = 0
 
+                w = 0
                 for linha in tabela:
-                    mercadoria = linha[6]
-                    usoProposto = linha[11]
-                    if produto in mercadoria.lower():
-                        p += 1
-                    if uso in usoProposto.lower():
-                        u += 1
-
-                c = 0
-                if uso_proposto == 1:
-                    c = somaAnimal
-
-                elif uso_proposto == 2:
-                    c = somaVegetal
+                    ncm_code = linha[4].strip('="')
+                    if ncm == ncm_code:
+                        w += 1
+                    if w == 0:
+                        w = 'ZERO'
 
                 tabelaFinal = [
-                    ['Tipo de Operação', 'Número total de LPCOs', f'Número de LPCOs do\nUso Proposto {uso.upper()}',
-                     f'Número de LPCOs contendo o\n produto {produto.upper()} na descrição'],
-                    [f'Importação {qualArea}', c, u, p]]
+                    ['Tipo de Operação', 'NCM', 'Número total de LPCOs com o NCM'],
+                    ['Importação', f'{ncm}', w]]
 
                 print('----------------------------------------------------')
                 print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
                 print('----------------------------------------------------')
                 print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
 
-            buscaImportacaoVegetal(produto)
+            if uso_proposto == 1 or uso_proposto == 2:
 
-            pergunta7 = input("Deseja fazer nova pesquisa sobre áreas agropecuárias e usos propostos?\nDigite 'S' para pesquisar:\n").lower()
+                produto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
+
+                if uso_proposto == 1:
+                    hashAnimal = {}
+
+                    i = 0
+                    for i in usoPropostoAnimal:
+                        hashAnimal[i] = 0
+
+                    l = 0
+                    somaAnimal = 0
+                    for u in usoPropostoAnimal:
+                        res = list(hashAnimal.keys())[l]
+                        tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
+                        n = 0
+                        for linha in tabela:
+                            usoProposto = linha[11]
+                            if res in usoProposto.lower():
+                                n += 1
+                        hashAnimal[res] = n
+                        l += 1
+
+                        somaAnimal += n
+
+                elif uso_proposto == 2:
+
+                    hashVegetal = {}
+
+                    i = 0
+                    for i in usoPropostoVegetal:
+                        hashVegetal[i] = 0
+
+                    l = 0
+                    somaVegetal = 0
+                    for u in usoPropostoVegetal:
+                        res = list(hashVegetal.keys())[l]
+                        tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
+                        n = 0
+                        for linha in tabela:
+                            usoProposto = linha[11]
+                            if res in usoProposto.lower():
+                                n += 1
+                        hashVegetal[res] = n
+                        l += 1
+
+                        somaVegetal += n
+
+                def buscaImportacaoVegetal(produto):
+
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
+                    p = 0
+                    u = 0
+
+                    for linha in tabela:
+                        mercadoria = linha[6]
+                        usoProposto = linha[11]
+                        if produto in mercadoria.lower():
+                            p += 1
+                        if uso in usoProposto.lower():
+                            u += 1
+
+                    c = 0
+                    if uso_proposto == 1:
+                        c = somaAnimal
+
+                    elif uso_proposto == 2:
+                        c = somaVegetal
+
+                    tabelaFinal = [
+                        ['Tipo de Operação', 'Número total de LPCOs', f'Número de LPCOs do\nUso Proposto {uso.upper()}',
+                         f'Número de LPCOs contendo o\n produto {produto.upper()} na descrição'],
+                        [f'Importação {qualArea}', c, u, p]]
+
+                    print('----------------------------------------------------')
+                    print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                    print('----------------------------------------------------')
+                    print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+                buscaImportacaoVegetal(produto)
+
+            pergunta7 = input("Deseja fazer nova pesquisa sobre áreas agropecuárias, usos propostos e NCM?\nDigite 'S' para pesquisar:\n").lower()
 
             if pergunta7 != 's':
                 menuAnimalVegetal = False
