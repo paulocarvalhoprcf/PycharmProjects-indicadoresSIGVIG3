@@ -63,7 +63,7 @@ Digite [3] para sair\n'''))
 
                     def buscaExportacaoAnimal(produto):
 
-                        tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_3}'))
+                        tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_3}'))
                         c = 0
                         p = 0
                         for linha in tabela:
@@ -302,7 +302,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
                 somaAnimal = 0
                 for u in usoPropostoAnimal:
                     res = list(hashAnimal.keys())[l]
-                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_2}'))
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
                     n = 0
                     for linha in tabela:
                         usoProposto = linha[11]
@@ -325,7 +325,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
                 somaVegetal = 0
                 for u in usoPropostoVegetal:
                     res = list(hashVegetal.keys())[l]
-                    tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_2}'))
+                    tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
                     n = 0
                     for linha in tabela:
                         usoProposto = linha[11]
@@ -338,7 +338,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
 
             def buscaImportacaoVegetal(produto):
 
-                tabela = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_2}'))
+                tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
                 p = 0
                 u = 0
 
@@ -382,33 +382,50 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
 
             def checarTamanhoDatas(dataInicio, dataFim):
 
-                while len(dataInicio) != 8 and len(dataFim) != 8:
+                if len(dataInicio) != 8 or len(dataFim) != 8:
                     print("---------------------------------------------------------------------------------")
                     print("As datas de início e do final do período de pesquisa devem ter o formato dd/mm/aa")
                     print("---------------------------------------------------------------------------------")
-                    dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
-                    dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
 
             checarTamanhoDatas(dataInicio, dataFim)
 
-            def buscaRelatorioTotalPorPeriodo(dataInicio, dataFim):
+            dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+            dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+
+            def checarConsistenciaDatas(dataInicio, dataFim):
 
                 minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
                 minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
 
-                while minhaDataInicio > minhaDataFim:
+                if minhaDataInicio > minhaDataFim:
 
                     print("---------------------------------------------------------------------------------")
                     print("A data de início do período de pesquisa deve ser anterior ao do final do período")
                     print("---------------------------------------------------------------------------------")
-                    dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
-                    dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
 
-                    checarTamanhoDatas(dataInicio, dataFim)
+            checarConsistenciaDatas(dataInicio, dataFim)
 
-                buscaRelatorioTotalPorPeriodo(dataInicio, dataFim)
+            dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+            dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
 
-                tabela1 = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_3}'))
+            def buscaRelatorioTotalPorPeriodo(dataInicio, dataFim):
+
+                checarTamanhoDatas(dataInicio, dataFim)
+
+                checarConsistenciaDatas(dataInicio, dataFim)
+
+                minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
+                minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+
+                if minhaDataInicio > minhaDataFim:
+                    while minhaDataInicio > minhaDataFim:
+                        checarConsistenciaDatas(dataInicio, dataFim)
+
+                if len(dataInicio) != 8 or len(dataFim) != 8:
+                    while len(dataInicio) != 8 or len(dataFim) != 8:
+                        checarTamanhoDatas(dataInicio, dataFim)
+
+                tabela1 = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_3}'))
                 nea = 0
 
                 for linha in tabela1:
@@ -428,7 +445,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
                         if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim:
                             nev += 1
 
-                tabela3 = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_2}'))
+                tabela3 = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
                 nia = 0
 
                 for linha in tabela3:
@@ -439,7 +456,7 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
                             if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim and i in linha[11].lower():
                                 nia += 1
 
-                tabela3 = csv.reader(open(f'/Users/pauloroberto/Downloads/{arquivo_2}'))
+                tabela3 = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
                 niv = 0
 
                 for linha in tabela3:
@@ -477,4 +494,4 @@ Digite [1] para animal ou [2] para vegetal.\n'''))
             menuGeral = False
             menuAnimalVegetal = False
             menuVegetal = False
-            menuAnimal = False          
+            menuAnimal = False
