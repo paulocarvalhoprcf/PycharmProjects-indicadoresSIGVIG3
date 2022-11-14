@@ -414,41 +414,29 @@ Digite [3] para pesquisar por NCM.\n'''))
 
             checarTamanhoDatas(dataInicio, dataFim)
 
-            dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
-            dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
-
             def checarConsistenciaDatas(dataInicio, dataFim):
 
-                minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
-                minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+                if len(dataInicio) == 8 and len(dataFim) == 8:
 
-                if minhaDataInicio > minhaDataFim:
+                    minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
+                    minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
 
-                    print("---------------------------------------------------------------------------------")
-                    print("A data de início do período de pesquisa deve ser anterior ao do final do período")
-                    print("---------------------------------------------------------------------------------")
+                    if minhaDataInicio > minhaDataFim:
+                        print("---------------------------------------------------------------------------------")
+                        print("A data de início do período de pesquisa deve ser anterior ao do final do período")
+                        print("---------------------------------------------------------------------------------")
+                        dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                        dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+                        checarConsistenciaDatas(dataInicio, dataFim)
 
             checarConsistenciaDatas(dataInicio, dataFim)
 
-            dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
-            dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
-
             def buscaRelatorioTotalPorPeriodo(dataInicio, dataFim):
-
-                checarTamanhoDatas(dataInicio, dataFim)
-
-                checarConsistenciaDatas(dataInicio, dataFim)
 
                 minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
                 minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
 
-                if minhaDataInicio > minhaDataFim:
-                    while minhaDataInicio > minhaDataFim:
-                        checarConsistenciaDatas(dataInicio, dataFim)
-
-                if len(dataInicio) != 8 or len(dataFim) != 8:
-                    while len(dataInicio) != 8 or len(dataFim) != 8:
-                        checarTamanhoDatas(dataInicio, dataFim)
+                checarTamanhoDatas(dataInicio, dataFim)
 
                 tabela1 = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_3}'))
                 nea = 0
@@ -520,3 +508,4 @@ Digite [3] para pesquisar por NCM.\n'''))
             menuAnimalVegetal = False
             menuVegetal = False
             menuAnimal = False
+            
