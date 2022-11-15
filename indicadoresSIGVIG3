@@ -405,12 +405,20 @@ Digite [3] para pesquisar por NCM.\n'''))
             dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
             dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
 
-            while len(dataInicio) != 8 or len(dataFim) != 8:
-                print("---------------------------------------------------------------------------------")
-                print("As datas de início e do final do período de pesquisa devem ter o formato dd/mm/aa")
-                print("---------------------------------------------------------------------------------")
-                dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
-                dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+            try:
+                minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
+                minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+
+            except:
+
+                if len(dataInicio) != 8 or len(dataFim) != 8:
+                    print("---------------------------------------------------------------------------------")
+                    print("As datas de início e do final do período de pesquisa devem ter o formato dd/mm/aa")
+                    print("---------------------------------------------------------------------------------")
+                    print("A data de início será 01/01/22 e a data do final será a data da consulta")
+                    print("---------------------------------------------------------------------------------")
+                    dataInicio = "01/01/22"
+                    dataFim = datetime.today().strftime("%d/%m/%y")
 
             minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
             minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
@@ -419,8 +427,15 @@ Digite [3] para pesquisar por NCM.\n'''))
                 print("---------------------------------------------------------------------------------")
                 print("A data de início do período de pesquisa deve ser anterior ao do final do período")
                 print("---------------------------------------------------------------------------------")
-                dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
-                dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+                print("A ordem das entradas foi invertida para proceder a busca")
+
+                temp = minhaDataInicio
+                minhaDataInicio = minhaDataFim
+                minhaDataFim = temp
+                dataInicio = datetime.strftime(minhaDataInicio, "%d/%m/%y")
+                dataFim = datetime.strftime(minhaDataFim, "%d/%m/%y")
+                print("---------------------------------------------------------------------------------")
+                print(f"Data de início: {dataInicio} - Data do final: {dataFim}")
 
             def buscaRelatorioTotalPorPeriodo(dataInicio, dataFim):
 
