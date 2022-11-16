@@ -300,8 +300,6 @@ Digite [3] para pesquisar por NCM.\n'''))
                     ncm_code = linha[4].strip('="')
                     if ncm == ncm_code:
                         w += 1
-                    if w == 0:
-                        w = 'ZERO'
 
                 tabelaFinal = [
                     ['Tipo de Operação', 'NCM', 'Número total de LPCOs com o NCM'],
