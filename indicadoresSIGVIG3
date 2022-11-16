@@ -273,7 +273,8 @@ Digite [5] para retornar ao menu principal.\n'''))
 
             uso_proposto = int(input('''Qual área agropecuária deseja pesquisar?
 Digite [1] para animal ou [2] para vegetal.
-Digite [3] para pesquisar por NCM.\n'''))
+Digite [3] para pesquisar por NCM.
+Digite [4] para pesquisar por Unidades Vigiagro.\n'''))
             if uso_proposto == 1:
                 qualArea = "Animal"
                 for i in usoPropostoAnimal:
@@ -301,6 +302,9 @@ Digite [3] para pesquisar por NCM.\n'''))
                     if ncm == ncm_code:
                         w += 1
 
+                if w == 0:
+                    w = 'zero'
+
                 tabelaFinal = [
                     ['Tipo de Operação', 'NCM', 'Número total de LPCOs com o NCM'],
                     ['Importação', f'{ncm}', w]]
@@ -309,6 +313,135 @@ Digite [3] para pesquisar por NCM.\n'''))
                 print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
                 print('----------------------------------------------------')
                 print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+            elif uso_proposto == 4:
+
+                tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
+
+                unidade_vigiagro = input("Qual unidade deseja pesquisar a quantidade de LPCOs?\n").upper()
+
+                unidades = {'V034 - VIGIAGRO PARANAGUÁ - PR': 0,
+                            'V064 - VIGIAGRO SANTOS - SP': 0,
+                            'V032 - VIGIAGRO FOZ DO IGUAÇU - PR': 0,
+                            'V055 - VIGIAGRO URUGUAIANA - RS': 0,
+                            'V052 - VIGIAGRO RIO GRANDE - RS': 0,
+                            'V020 - VIGIAGRO CORUMBÁ - MS': 0,
+                            'V029 - VIGIAGRO SUAPE - PE': 0,
+                            'V054 - VIGIAGRO SÃO BORJA - RS': 0,
+                            'V045 - VIGIAGRO ACEGUÁ-BAGÉ - RS': 0,
+                            'V061 - VIGIAGRO SÃO FRANCISCO DO SUL - SC': 0,
+                            'V026 - VIGIAGRO VILA DO CONDE - PA': 0,
+                            'V058 - VIGIAGRO ITAJAÍ - SC': 0,
+                            'V017 - VIGIAGRO ITAQUÍ-MADEIRA - MA': 0,
+                            'V049 - VIGIAGRO PORTO ALEGRE - RS': 0,
+                            'V010 - VIGIAGRO SALVADOR - BA': 0,
+                            'V024 - VIGIAGRO BELÉM - PA': 0,
+                            'V060 - VIGIAGRO ITAPOÁ - SC': 0,
+                            'V063 - VIGIAGRO GUARULHOS - SP': 0,
+                            'V028 - VIGIAGRO RECIFE - PE': 0,
+                            'U040 - UTRA CAMPlNAS - SP': 0,
+                            'V015 - VIGIAGRO VITÓRIA - ES': 0,
+                            'U046 - UTRA REGIÃO METROPOLITANA - SP': 0,
+                            'V053 - VIGIAGRO SANTANA DO LIVRAMENTO - RS': 0,
+                            'U034 - UTRA CAXIAS DO SUL - RS': 0,
+                            'V046 - VIGIAGRO CHUÍ - RS': 0,
+                            'V051 - VIGIAGRO QUARAÍ - RS': 0,
+                            'V039 - VIGIAGRO NATAL - RN': 0,
+                            'V048 - VIGIAGRO JAGUARÃO - RS': 0,
+                            'SF21 - SFA - RIO GRANDE DO SUL': 0,
+                            'V059 - VIGIAGRO IMBITUBA - SC': 0,
+                            'V056 - VIGIAGRO DIONÍSIO CERQUEIRA - SC': 0,
+                            'V047 - VIGIAGRO ITAQUÍ - RS': 0,
+                            'V013 - VIGIAGRO PECÉM - CE': 0,
+                            'V050 - VIGIAGRO PORTO XAVIER - RS': 0,
+                            'V025 - VIGIAGRO SANTARÉM - PA': 0,
+                            'V003 - VIGIAGRO MACEIÓ - AL': 0,
+                            'V030 - VIGIAGRO VALE DO SÃO FRANCISCO - PE': 0,
+                            'V036 - VIGIAGRO ITAGUAÍ - RJ': 0,
+                            'V038 - VIGIAGRO PORTO DO RIO DE JANEIRO - RJ': 0,
+                            'U041 - UTRA FAZENDA IPANEMA - SP': 0,
+                            'V065 - VIGIAGRO VIRACOPOS - SP': 0,
+                            'V005 - VIGIAGRO MANAUS - AM': 0,
+                            'V018 - VIGIAGRO CONFINS - MG': 0,
+                            'U018 - UTRA UBERLÂNDIA - MG': 0,
+                            'V002 - VIGIAGRO EPITACIOLÂNDIA - AC': 0,
+                            'U023 - UTRA SANTARÉM - PA': 0,
+                            'V031 - VIGIAGRO CURITIBA - PR': 0,
+                            'U017 - UTRA UBERABA - MG': 0,
+                            'U019 - UTRA VARGINHA - MG': 0,
+                            'V062 - VIGIAGRO ARACAJÚ - SE': 0,
+                            'SF25 - SFA - SÃO PAULO': 0,
+                            'V021 - VIGIAGRO PONTA PORÃ - MS': 0,
+                            'V012 - VIGIAGRO FORTALEZA - CE': 0,
+                            'V037 - VIGIAGRO GALEÃO - RJ': 0,
+                            'SFA - PARANÁ': 0,
+                            'SF16 - SFA - PARANÁ': 0,
+                            'U042 - UTRA GUARATINGUETÁ - SP': 0,
+                            'VIGIAGRO URUGUAIANA - RS': 0,
+                            'V040 - VIGIAGRO GUAJARÁ-MIRIM - RO': 0,
+                            'VIGIAGRO ACEGUÁ-BAGÉ - RS': 0,
+                            'VIGIAGRO PARANAGUÁ - PR': 0,
+                            'V023 - VIGIAGRO CUIABÁ - MT': 0,
+                            'V004 - VIGIAGRO AEROPORTO DE MANAUS - AM': 0,
+                            'SF08 - SFA - ESPÍRITO SANTO': 0,
+                            'SF10 - SFA - MARANHÃO': 0,
+                            'SF19 - SFA - RIO DE JANEIRO': 0,
+                            'V011 - VIGIAGRO AEROPORTO DE FORTALEZA - CE': 0,
+                            'U039 - UTRA BOTUCATU - SP': 0,
+                            'V057 - VIGIAGRO FLORIANÓPOLIS - SC': 0,
+                            'SF14 - SFA - PARÁ': 0,
+                            'V027 - VIGIAGRO CABEDELO - PB': 0,
+                            'SF24 - SFA - SANTA CATARINA': 0,
+                            'SF26 - SFA - SERGIPE': 0,
+                            'V043 - VIGIAGRO BONFIM - RR': 0,
+                            'SF13 - SFA - MINAS GERAIS': 0,
+                            'SF17 - SFA - PERNAMBUCO': 0,
+                            'SF11 - SFA - MATO GROSSO': 0,
+                            'SF06 - SFA - CEARÁ': 0,
+                            'SF12 - SFA - MATO GROSSO DO SUL': 0,
+                            'U010 - UTRA DIVINÓPOLIS - MG': 0,
+                            'U005 - UTRA VITÓRIA DA CONQUISTA - BA': 0,
+                            'SF03 - SFA - AMAZONAS': 0,
+                            'SF20 - SFA - RIO GRANDE DO NORTE': 0,
+                            'U011 - UTRA JUIZ DE FORA - MG': 0,
+                            'SF05 - SFA - BAHIA': 0,
+                            'SF15 - SFA - PARAÍBA': 0,
+                            'SF01 - SFA - ACRE': 0,
+                            'V016 - VIGIAGRO ANÁPOLIS - GO': 0,
+                            'SF09 - SFA - GOIÁS': 0,
+                            'U024 - UTRA CAMPINA GRANDE - PB': 0,
+                            'V041 - VIGIAGRO PORTO VELHO - RO': 0,
+                            'V014 - VIGIAGRO BRASÍLIA - DF': 0,
+                            'U013 - UTRA MONTES CLAROS - MG': 0,
+                            'SF02 - SFA - ALAGOAS': 0,
+                            'V001 - VIGIAGRO ASSIS BRASIL - AC': 0,
+                            'SF07 - SFA - DISTRITO FEDERAL': 0,
+                            'V035 - VIGIAGRO SANTA HELENA - PR': 0,
+                            'U037 - UTRA ARAÇATUBA - SP': 0,
+                            'V033 - VIGIAGRO GUAÍRA - PR': 0,
+                            'SF04 - SFA - AMAPÁ': 0,
+                            'V022 - VIGIAGRO MUNDO NOVO - MS': 0,
+                            'SF23 - SFA - RORAIMA': 0,
+                            '': 0,
+                            'V007 - VIGIAGRO SANTANA - AP': 0,
+                            'V044 - VIGIAGRO PACARAIMA - RR': 0,
+                            'U014 - UTRA PATOS DE MINAS - MG': 0,
+                            'V66 - VIGIAGRO BAURU - SP': 0}
+
+                for linha in tabela:
+                    for key, value in unidades.items():
+                        if key == linha[18]:
+                            unidades[key] = value + 1
+
+                print('----------------------------------------------------')
+                print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                print('----------------------------------------------------')
+                for key, value in unidades.items():
+                    if unidade_vigiagro in key:
+                        tabelaFinal = [
+                            ['Unidade Vigiagro', 'Número total de LPCOs'],
+                            [f'{key}', value]]
+                        print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
 
             if uso_proposto == 1 or uso_proposto == 2:
 
@@ -392,7 +525,7 @@ Digite [3] para pesquisar por NCM.\n'''))
 
                 buscaImportacaoVegetal(produto)
 
-            pergunta7 = input("Deseja fazer nova pesquisa sobre áreas agropecuárias, usos propostos e NCM?\nDigite 'S' para pesquisar:\n").lower()
+            pergunta7 = input("Deseja fazer nova pesquisa sobre áreas agropecuárias, usos propostos, NCM ou Unidade Vigiagro?\nDigite 'S' para pesquisar:\n").lower()
 
             if pergunta7 != 's':
                 menuAnimalVegetal = False
