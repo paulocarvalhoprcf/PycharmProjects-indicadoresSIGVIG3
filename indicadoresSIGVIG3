@@ -415,9 +415,10 @@ Digite [3] para pesquisar por NCM.\n'''))
                     print("---------------------------------------------------------------------------------")
                     print("As datas de início e do final do período de pesquisa devem ter o formato dd/mm/aa")
                     print("---------------------------------------------------------------------------------")
-                    print("A data de início será 01/01/22 e a data do final será a data da consulta")
+                    print("A data de início será 01/01/"+datetime.today().strftime("%y")+" e a data do final será a "
+                                                                                         "data da consulta")
                     print("---------------------------------------------------------------------------------")
-                    dataInicio = "01/01/22"
+                    dataInicio = "01/01/"+datetime.today().strftime("%y")
                     dataFim = datetime.today().strftime("%d/%m/%y")
 
             minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
