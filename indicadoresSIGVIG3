@@ -572,7 +572,8 @@ Digite [7] para retornar ao menu principal.\n'''))
             uso_proposto = int(input('''Deseja pesquisar por área agropecuária, NCM ou Unidades Vigiagro?
 Digite [1] para animal ou [2] para vegetal.
 Digite [3] para pesquisar por NCM.
-Digite [4] para pesquisar por Unidades Vigiagro.\n'''))
+Digite [4] para pesquisar por Unidades Vigiagro.
+Digite [5] para pesquisar pelo CNPJ do importador.\n'''))
             if uso_proposto == 1:
                 qualArea = "Animal"
                 for i in usoPropostoAnimal:
@@ -929,6 +930,51 @@ Digite [4] para pesquisar por Unidades Vigiagro.\n'''))
                     print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
 
                 buscaImportacaoVegetal(produto)
+
+            elif uso_proposto == 5:
+
+                cnpj = input("Qual CNPJ do importador deseja pesquisar?\n"
+                             "Informe um número válido com 9 dígitos (raiz) ou 14 dígitos (completo).\n")
+
+                tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
+
+                nc = 0
+                cnpj_root = ''
+                razao_social = ''
+                for linha in tabela:
+                    cnpj_code = linha[7]
+                    cnpj_code_root = cnpj_code[0:9]
+
+                    if len(cnpj) == 9:
+                        cnpj_root = cnpj
+
+                    elif len(cnpj) == 14:
+                        cnpj_root = cnpj[0:9]
+
+                    else:
+                        while len(cnpj) != 9 and len(cnpj) != 14:
+                            print('Foi informado um número de CNPJ diferente do formato com 9 dígitos (raiz) ou 14 dígitos.')
+                            cnpj = input("Qual CNPJ do importador deseja pesquisar?\n"
+                                         "Informe um número válido com 9 dígitos (raiz) ou 14 dígitos (completo).\n")
+
+                    if cnpj_root == cnpj_code_root:
+                        nc += 1
+                        razao_social = linha[9]
+
+                        if nc == 0:
+                            nc = 'zero'
+
+                cnpj_final = f'{cnpj[0:3]}' + '.' + f'{cnpj[3:6]}' + '.' + f'{cnpj[6:9]}' + '/XXX-XX'
+
+                tabelaFinal = [
+                    ['Tipo de Operação', 'Razão Social do Importador', 'CNPJ',
+                     'Número total de LPCOs com o CNPJ'],
+                    ['Importação', f'{razao_social}', f'{cnpj_final}', nc]]
+
+                print('----------------------------------------------------')
+                print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                print('----------------------------------------------------')
+                print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
 
             pergunta7 = input("Deseja fazer nova pesquisa sobre áreas agropecuárias, usos propostos, NCM ou Unidade Vigiagro?\nDigite 'S' para pesquisar:\n").lower()
 
