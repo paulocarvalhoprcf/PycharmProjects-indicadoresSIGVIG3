@@ -934,47 +934,71 @@ Digite [5] para pesquisar pelo CNPJ do importador.\n'''))
             elif uso_proposto == 5:
 
                 cnpj = input("Qual CNPJ do importador deseja pesquisar?\n"
-                             "Informe um número válido com 8 dígitos (raiz) ou 14 dígitos (completo).\n")
+                             "Informe um número válido com 8 dígitos (raiz) ou 14 dígitos (completo)\n"
+                             "sem pontos, barra e hífen.\n")
 
                 tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
 
-                nc = 0
-                cnpj_root = ''
-                razao_social = ''
-                for linha in tabela:
-                    cnpj_code = linha[7]
-                    cnpj_code_root = cnpj_code[0:9]
-
-                    if len(cnpj) == 8:
+                if len(cnpj) == 8:
+                    nc = 0
+                    cnpj_root = ''
+                    razao_social = ''
+                    for linha in tabela:
+                        cnpj_code = linha[7]
+                        cnpj_code_root = cnpj_code[0:8]
                         cnpj_root = cnpj
 
-                    elif len(cnpj) == 14:
-                        cnpj_root = cnpj[0:9]
+                        if cnpj_root == cnpj_code_root:
+                            nc += 1
+                            razao_social = linha[9]
 
-                    else:
-                        while len(cnpj) != 8 and len(cnpj) != 14:
-                            print('Foi informado um número de CNPJ diferente do formato com 8 dígitos (raiz) ou 14 dígitos.')
-                            cnpj = input("Qual CNPJ do importador deseja pesquisar?\n"
-                                         "Informe um número válido com 9 dígitos (raiz) ou 14 dígitos (completo).\n")
+                            if nc == 0:
+                                nc = 'zero'
 
-                    if cnpj_root == cnpj_code_root:
-                        nc += 1
-                        razao_social = linha[9]
+                    cnpj_final = f'{cnpj[0:2]}' + '.' + f'{cnpj[2:5]}' + '.' + f'{cnpj[5:8]}' + '/XXX-XX'
 
-                        if nc == 0:
-                            nc = 'zero'
+                    tabelaFinal = [
+                        ['Tipo de Operação', 'Razão Social do Importador', 'CNPJ',
+                         'Número total de LPCOs com o CNPJ'],
+                        ['Importação', f'{razao_social}', f'{cnpj_final}', nc]]
 
-                cnpj_final = f'{cnpj[0:3]}' + '.' + f'{cnpj[3:6]}' + '.' + f'{cnpj[6:9]}' + '/XXX-XX'
+                    print('----------------------------------------------------')
+                    print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                    print('----------------------------------------------------')
+                    print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
 
-                tabelaFinal = [
-                    ['Tipo de Operação', 'Razão Social do Importador', 'CNPJ',
-                     'Número total de LPCOs com o CNPJ'],
-                    ['Importação', f'{razao_social}', f'{cnpj_final}', nc]]
+                elif len(cnpj) == 14:
+                    nc = 0
+                    razao_social = ''
+                    for linha in tabela:
+                        cnpj_code = linha[7]
+                        cnpj_root = cnpj
 
-                print('----------------------------------------------------')
-                print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
-                print('----------------------------------------------------')
-                print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+                        if cnpj_code == cnpj:
+                            nc += 1
+                            razao_social = linha[9]
+
+                            if nc == 0:
+                                nc = 'zero'
+
+                    cnpj_final = f'{cnpj[0:2]}' + '.' + f'{cnpj[2:5]}' + '.' + f'{cnpj[5:8]}' + '/' + f'{cnpj[8:12]}' + '-' + f'{cnpj[12:14]}'
+
+                    tabelaFinal = [
+                        ['Tipo de Operação', 'Razão Social do Importador', 'CNPJ',
+                         'Número total de LPCOs com o CNPJ'],
+                        ['Importação', f'{razao_social}', f'{cnpj_final}', nc]]
+
+                    print('----------------------------------------------------')
+                    print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                    print('----------------------------------------------------')
+                    print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+                else:
+                    while len(cnpj) != 8 and len(cnpj) != 14:
+                        print(
+                            'Foi informado um número de CNPJ diferente do formato com 8 dígitos (raiz) ou 14 dígitos.')
+                        cnpj = input("Qual CNPJ do importador deseja pesquisar?\n"
+                                     "Informe um número válido com 8 dígitos (raiz) ou 14 dígitos (completo).\n")
 
             pergunta7 = input("Deseja fazer nova pesquisa sobre áreas agropecuárias, usos propostos, NCM ou Unidade Vigiagro?\nDigite 'S' para pesquisar:\n").lower()
 
