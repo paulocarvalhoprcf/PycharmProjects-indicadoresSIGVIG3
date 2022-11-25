@@ -97,7 +97,7 @@ Digite [2] para pesquisar quantos CF válidos foram registrados na base de dados
 Digite [3] para pesquisar quantos CF válidos existem na base de dados por AFFA.
 Digite [4] para pesquisar quantos CF válidos existem na base de dados por países de destino.
 Digite [5] para pesquisar quantos CF válidos emitidos por Unidade Vigiagro existem na base de dados.
-Digite [6] para realizar pesquisas combinadas dos dois parâmetros anteriores.
+Digite [6] para realizar pesquisas combinadas por AFFA e país de destino.
 Digite [7] para retornar ao menu principal.\n'''))
 
                     if tipoPesquisa == 1:
@@ -218,7 +218,7 @@ Digite [7] para retornar ao menu principal.\n'''))
                             print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
                             print('----------------------------------------------------')
                             tabelaFinal = [['Tipo de Operação', 'País de destino',
-                                            'Número de LPCOs'],
+                                            'Número total de CF'],
                                            ['Exportação Vegetal', nomePais, p]]
                             print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
 
@@ -591,7 +591,7 @@ Digite [5] para pesquisar pelo CNPJ do importador.\n'''))
                 print(uso)
 
             elif uso_proposto == 3:
-                ncm = input("Qual NCM deseja pesquisar?\n")
+                ncm = input("Qual NCM deseja pesquisar?\nDigite sem espaços ou pontos.\n")
 
                 tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
 
@@ -934,7 +934,7 @@ Digite [5] para pesquisar pelo CNPJ do importador.\n'''))
             elif uso_proposto == 5:
 
                 cnpj = input("Qual CNPJ do importador deseja pesquisar?\n"
-                             "Informe um número válido com 9 dígitos (raiz) ou 14 dígitos (completo).\n")
+                             "Informe um número válido com 8 dígitos (raiz) ou 14 dígitos (completo).\n")
 
                 tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
 
@@ -945,15 +945,15 @@ Digite [5] para pesquisar pelo CNPJ do importador.\n'''))
                     cnpj_code = linha[7]
                     cnpj_code_root = cnpj_code[0:9]
 
-                    if len(cnpj) == 9:
+                    if len(cnpj) == 8:
                         cnpj_root = cnpj
 
                     elif len(cnpj) == 14:
                         cnpj_root = cnpj[0:9]
 
                     else:
-                        while len(cnpj) != 9 and len(cnpj) != 14:
-                            print('Foi informado um número de CNPJ diferente do formato com 9 dígitos (raiz) ou 14 dígitos.')
+                        while len(cnpj) != 8 and len(cnpj) != 14:
+                            print('Foi informado um número de CNPJ diferente do formato com 8 dígitos (raiz) ou 14 dígitos.')
                             cnpj = input("Qual CNPJ do importador deseja pesquisar?\n"
                                          "Informe um número válido com 9 dígitos (raiz) ou 14 dígitos (completo).\n")
 
@@ -983,42 +983,32 @@ Digite [5] para pesquisar pelo CNPJ do importador.\n'''))
 
         elif operacao == 3:
 
-        # Utilizar data no formato dd/mm/aa
+            # Utilizar data no formato dd/mm/aa
             dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
             dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
 
-            try:
-                minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
-                minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
-
-            except:
-
-                if len(dataInicio) != 8 or len(dataFim) != 8:
-                    print("---------------------------------------------------------------------------------")
-                    print("As datas de início e do final do período de pesquisa devem ter o formato dd/mm/aa")
-                    print("---------------------------------------------------------------------------------")
-                    print("A data de início será 01/01/"+datetime.today().strftime("%y")+" e a data do final será a "
-                                                                                         "data da consulta")
-                    print("---------------------------------------------------------------------------------")
-                    dataInicio = "01/01/"+datetime.today().strftime("%y")
-                    dataFim = datetime.today().strftime("%d/%m/%y")
+            while len(dataInicio) != 8 or len(dataFim) != 8:
+                print("---------------------------------------------------------------------------------")
+                print("As datas de início e do final do período de pesquisa devem ter o formato dd/mm/aa")
+                print("---------------------------------------------------------------------------------")
+                dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
 
             minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
             minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
 
-            if minhaDataInicio > minhaDataFim:
+            while minhaDataInicio > minhaDataFim:
                 print("---------------------------------------------------------------------------------")
                 print("A data de início do período de pesquisa deve ser anterior ao do final do período")
                 print("---------------------------------------------------------------------------------")
-                print("A ordem das entradas foi invertida para proceder a busca")
 
-                temp = minhaDataInicio
-                minhaDataInicio = minhaDataFim
-                minhaDataFim = temp
-                dataInicio = datetime.strftime(minhaDataInicio, "%d/%m/%y")
-                dataFim = datetime.strftime(minhaDataFim, "%d/%m/%y")
-                print("---------------------------------------------------------------------------------")
-                print(f"Data de início: {dataInicio} - Data do final: {dataFim}")
+                # Utilizar data no formato dd/mm/aa
+                dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+
+                minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
+                minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+
 
             def buscaRelatorioTotalPorPeriodo(dataInicio, dataFim):
 
