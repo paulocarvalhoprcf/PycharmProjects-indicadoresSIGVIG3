@@ -58,25 +58,81 @@ Digite [3] para sair\n'''))
 
                 while menuAnimal:
 
+                    # Utilizar data no formato dd/mm/aa
+                    dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                    dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+
                     produto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
 
-                    def buscaExportacaoAnimal(produto):
+                    perguntaPais = input("Deseja pesquisa combinada por país? Tecle 'S' para 'Sim'\n").lower()
 
-                        tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_3}'))
+                    if perguntaPais == 's':
+                        pais = input("Qual país deseja pesquisar?\n")
+
+                    else:
+                        pais = 'NÃO'
+
+                    def buscaExportacaoAnimal(dataInicio, dataFim, produto, pais):
+
+                        minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
+                        minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+
+                        tabela1 = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_3}'))
                         c = 0
-                        p = 0
-                        for linha in tabela:
-                            c += 1
-                            mercadoria = linha[18]
-                            if produto in mercadoria.lower():
-                                p += 1
-                        print('----------------------------------------------------')
-                        print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
-                        print('----------------------------------------------------')
-                        tabelaFinal = [['Tipo de Operação', 'Número total de LPCOs', f'Número total de LPCOs \ncom a expressão {produto.upper()} \nna descrição do produto'], ['Exportação Animal',  c, p]]
-                        print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+                        nea = 0
+                        neap = 0
+                        deferido = 0
+                        indeferido = 0
 
-                    buscaExportacaoAnimal(produto)
+                        for linha in tabela1:
+                            mercadoria = linha[18]
+                            paisDestino = linha[24]
+                            status = linha[15]
+                            if linha[5] != "Data de Recebimento":
+                                dataRecebimento = linha[5][0:8]
+                                minhaDataRecebimento = datetime.strptime(dataRecebimento, "%d/%m/%y")
+                                if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim:
+                                    c += 1
+                                if perguntaPais == 's':
+                                    if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim and produto in mercadoria.lower() and pais in paisDestino.lower():
+                                        neap += 1
+                                        if status == 'DEFERIDO':
+                                            deferido += 1
+                                        elif status == 'INDEFERIDO':
+                                            indeferido += 1
+                                else:
+                                    if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim and produto in mercadoria.lower():
+                                        nea += 1
+                                        if status == 'DEFERIDO':
+                                            deferido += 1
+                                        elif status == 'INDEFERIDO':
+                                            indeferido += 1
+
+                        if perguntaPais == 's':
+                            print('----------------------------------------------------')
+                            print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                            print('----------------------------------------------------')
+                            print(f'Data inicial de busca: {dataInicio}')
+                            print(f'Data final de busca: {dataFim}')
+                            tabelaFinal = [['Tipo de Operação', 'Expressão de busca', 'País de destino', 'Número total de LPCOs',
+                                            f'Número total de LPCOs \ncom a expressão \n{produto.upper()} \nna descrição do produto e para o país pesquisado', 'LPCOs deferidas', 'LPCOs indeferidas'],
+                                           ['Exportação Animal', produto.upper(), pais.upper(), c, neap, deferido, indeferido]]
+                            print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+                        else:
+
+                            print('----------------------------------------------------')
+                            print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                            print('----------------------------------------------------')
+                            print(f'Data inicial de busca: {dataInicio}')
+                            print(f'Data final de busca: {dataFim}')
+                            tabelaFinal = [['Tipo de Operação', 'Expressão de busca','Número total de LPCOs',
+                                            f'Número total de LPCOs \ncom a expressão \n{produto.upper()} \nna descrição do produto', 'LPCOs deferidas', 'LPCOs indeferidas'],
+                                           ['Exportação Animal', produto.upper(), c, nea, deferido, indeferido]]
+                            print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+
+                    buscaExportacaoAnimal(dataInicio, dataFim, produto, pais)
 
                     pergunta1 = input("Deseja voltar ao menu da Exportação Animal?\nDigite 'S' para voltar:\n").lower()
 
@@ -573,7 +629,8 @@ Digite [7] para retornar ao menu principal.\n'''))
 Digite [1] para animal ou [2] para vegetal.
 Digite [3] para pesquisar por NCM.
 Digite [4] para pesquisar por Unidades Vigiagro.
-Digite [5] para pesquisar pelo CNPJ do importador.\n'''))
+Digite [5] para pesquisar pelo CNPJ do importador.
+Digite [6] para pesquisar por período de busca.\n'''))
             if uso_proposto == 1:
                 qualArea = "Animal"
                 for i in usoPropostoAnimal:
@@ -999,6 +1056,88 @@ Digite [5] para pesquisar pelo CNPJ do importador.\n'''))
                             'Foi informado um número de CNPJ diferente do formato com 8 dígitos (raiz) ou 14 dígitos.')
                         cnpj = input("Qual CNPJ do importador deseja pesquisar?\n"
                                      "Informe um número válido com 8 dígitos (raiz) ou 14 dígitos (completo).\n")
+
+            elif uso_proposto == 6:
+
+                # Utilizar data no formato dd/mm/aa
+                dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+
+                produto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
+
+                perguntaPais = input("Deseja pesquisa combinada por país? Tecle 'S' para 'Sim'\n").lower()
+
+                if perguntaPais == 's':
+                    pais = input("Qual país deseja pesquisar?\n")
+
+                else:
+                    pais = 'NÃO'
+
+
+                def buscaImportacao(dataInicio, dataFim, produto, pais):
+
+                    minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
+                    minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+
+                    tabela1 = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_2}'))
+                    c = 0
+                    ni = 0
+                    nip = 0
+                    deferido = 0
+                    indeferido = 0
+
+                    for linha in tabela1:
+                        mercadoria = linha[6]
+                        paisOrigem = linha[5]
+                        status = linha[19]
+                        if linha[24] != "Data de Recebimento":
+                            dataRecebimento = linha[24][0:8]
+                            minhaDataRecebimento = datetime.strptime(dataRecebimento, "%d/%m/%y")
+                            if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim:
+                                c += 1
+                            if perguntaPais == 's':
+                                if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim and produto in mercadoria.lower() and pais in paisOrigem.lower():
+                                    nip += 1
+                                    if status == 'DEFERIDO':
+                                        deferido += 1
+                                    elif status == 'INDEFERIDO':
+                                        indeferido += 1
+                            else:
+                                if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim and produto in mercadoria.lower():
+                                    ni += 1
+                                    if status == 'DEFERIDO':
+                                        deferido += 1
+                                    elif status == 'INDEFERIDO':
+                                        indeferido += 1
+
+                    if perguntaPais == 's':
+                        print('----------------------------------------------------')
+                        print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                        print('----------------------------------------------------')
+                        print(f'Data inicial de busca: {dataInicio}')
+                        print(f'Data final de busca: {dataFim}')
+                        tabelaFinal = [
+                            ['Tipo de Operação', 'Expressão de busca', 'País de destino', 'Número total de LPCOs',
+                             f'Número total de LPCOs \ncom a expressão \n {produto.upper()} \nna descrição do produto e para o país pesquisado',
+                             'LPCOs deferidas', 'LPCOs indeferidas'],
+                            ['Importação', produto.upper(), pais.upper(), c, nip, deferido, indeferido]]
+                        print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+                    else:
+
+                        print('----------------------------------------------------')
+                        print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                        print('----------------------------------------------------')
+                        print(f'Data inicial de busca: {dataInicio}')
+                        print(f'Data final de busca: {dataFim}')
+                        tabelaFinal = [['Tipo de Operação', 'Expressão de busca', 'Número total de LPCOs',
+                                        f'Número total de LPCOs \ncom a expressão \n {produto.upper()} \nna descrição do produto',
+                                        'LPCOs deferidas', 'LPCOs indeferidas'],
+                                       ['Importação', produto.upper(), c, ni, deferido, indeferido]]
+                        print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+
+                buscaImportacao(dataInicio, dataFim, produto, pais)
 
             pergunta7 = input("Deseja fazer nova pesquisa sobre áreas agropecuárias, usos propostos, NCM ou Unidade Vigiagro?\nDigite 'S' para pesquisar:\n").lower()
 
