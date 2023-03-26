@@ -2,6 +2,8 @@ import csv
 from datetime import datetime
 from time import sleep
 from tabulate import tabulate
+import pandas as pd
+
 
 saudacaoInicial = ('''------------------------------------------------------------------
 ------------- BEM-VINDO AO BANCO DE DADOS DO SIGVIG3 --------------
@@ -154,7 +156,9 @@ Digite [3] para pesquisar quantos CF válidos existem na base de dados por AFFA.
 Digite [4] para pesquisar quantos CF válidos existem na base de dados por países de destino.
 Digite [5] para pesquisar quantos CF válidos emitidos por Unidade Vigiagro existem na base de dados.
 Digite [6] para realizar pesquisas combinadas por AFFA e país de destino.
-Digite [7] para retornar ao menu principal.\n'''))
+Digite [7] para realizar pesquisas combinadas por produto, país de destino e períodos.
+Digite [8] para realizar pesquisas combinadas por uso proposto, país de destino e períodos.
+Digite [9] para retornar ao menu principal.\n'''))
 
                     if tipoPesquisa == 1:
 
@@ -567,7 +571,7 @@ Digite [7] para retornar ao menu principal.\n'''))
                         qualPais = input("Qual destino deseja pesquisar na base de dados?\n").lower()
 
 
-                        def buscaExportacaoVegetalCombinada(fiscal, pais):
+                        def buscaExportacaoVegetalCombinada1(fiscal, pais):
 
                             tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_4}'))
                             n = 0
@@ -595,7 +599,7 @@ Digite [7] para retornar ao menu principal.\n'''))
                                     "Não foram encontrados CF emitidos pelo AFFA {}, contendo coletivamente o país de destino {}.".format(qualFiscal.upper(),
                                         qualPais.upper()))
 
-                        buscaExportacaoVegetalCombinada(qualFiscal, qualPais)
+                        buscaExportacaoVegetalCombinada1(qualFiscal, qualPais)
 
                         sleep(1)
 
@@ -605,6 +609,130 @@ Digite [7] para retornar ao menu principal.\n'''))
                             menuVegetal = False
 
                     elif tipoPesquisa == 7:
+
+                        qualProduto = input("Qual produto deseja pesquisar na base de dados?\n").lower()
+                        qualPais = input("Qual destino deseja pesquisar na base de dados?\n").lower()
+
+                        dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                        dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+
+                        retornaLPCO = input("Deseja que retorne os LPCOs referentes às buscas?\nDigite 'S' para SIM\n").lower()
+
+
+                        def buscaExportacaoVegetalCombinada2(produto, pais, dataInicio, dataFim):
+
+                            minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
+                            minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+
+                            tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_1}'))
+                            n = 0
+                            nomeProduto = ""
+                            nomePais = ""
+                            listaLPCO = []
+
+                            for linha in tabela:
+                                dados1 = linha[22]
+                                dados2 = linha[11]
+
+                                if linha[5] != "Data de Recebimento":
+                                    dataRecebimento = linha[5][0:8]
+                                    minhaDataRecebimento = datetime.strptime(dataRecebimento, "%d/%m/%y")
+                                    if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim:
+                                        if produto in dados1.lower() and pais in dados2.lower() and linha[17] == "DEFERIDO":
+                                            n += 1
+                                            nomeProduto = produto.upper()
+                                            nomePais = f"{dados2}"
+                                            if retornaLPCO == 's':
+                                                listaLPCO.append(linha[2])
+
+                            print('----------------------------------------------------')
+                            print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                            print('----------------------------------------------------')
+                            tabelaFinal = [['Tipo de Operação', 'Data inicial de busca', 'Data final de busca', 'Nome do produto', 'País de destino',
+                                            'Número de LPCOs'],
+                                           ['Exportação Vegetal', minhaDataInicio, minhaDataFim, nomeProduto, nomePais, n]]
+                            print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+                            df = pd.DataFrame({'Número do LPCO': listaLPCO})
+                            print(df.to_numpy())
+
+                            if n == 0:
+                                print(
+                                    "Não foram encontradas LPCOs registradas para o produto {}, coletivamente para o país de destino {},\nno período entre {} e {}.".format(qualProduto.upper(),
+                                        qualPais.upper(), minhaDataInicio, minhaDataFim))
+
+                        buscaExportacaoVegetalCombinada2(qualProduto, qualPais, dataInicio, dataFim)
+
+                        sleep(1)
+
+                        pergunta5 = input("Deseja voltar ao menu da Exportação Vegetal?\nDigite 'S' para voltar:\n").lower()
+
+                        if pergunta5 != 's':
+                            menuVegetal = False
+
+                    elif tipoPesquisa == 8:
+
+                        qualUsoProposto = input("Qual uso proposto deseja pesquisar na base de dados?\n").lower()
+                        qualPais = input("Qual destino deseja pesquisar na base de dados?\n").lower()
+
+                        dataInicio = input("Qual a data do início do período de pesquisa? Usar formato dd/mm/aa\n")
+                        dataFim = input("Qual a data do final do período de pesquisa? Usar formato dd/mm/aa\n")
+
+                        retornaLPCO = input("Deseja que retorne os LPCOs referentes às buscas?\nDigite 'S' para SIM\n").lower()
+
+
+                        def buscaExportacaoVegetalCombinada2(usoProposto, pais, dataInicio, dataFim):
+
+                            minhaDataInicio = datetime.strptime(dataInicio, "%d/%m/%y")
+                            minhaDataFim = datetime.strptime(dataFim, "%d/%m/%y")
+
+                            tabela = csv.reader(open(f'/Users/pauloroberto/Desktop/{arquivo_1}'))
+                            n = 0
+                            nomeUsoProposto = ""
+                            nomePais = ""
+                            listaLPCO = []
+
+                            for linha in tabela:
+                                dados1 = linha[14]
+                                dados2 = linha[11]
+
+                                if linha[5] != "Data de Recebimento":
+                                    dataRecebimento = linha[5][0:8]
+                                    minhaDataRecebimento = datetime.strptime(dataRecebimento, "%d/%m/%y")
+                                    if minhaDataInicio <= minhaDataRecebimento <= minhaDataFim:
+                                        if usoProposto in dados1.lower() and pais in dados2.lower() and linha[17] == "DEFERIDO":
+                                            n += 1
+                                            nomeUsoProposto = f"{dados1}"
+                                            nomePais = f"{dados2}"
+                                            if retornaLPCO == 's':
+                                                listaLPCO.append(linha[2])
+
+                            print('----------------------------------------------------')
+                            print('---RELATÓRIO DE REGISTRO DE LPCO NA BASE DE DADOS---')
+                            print('----------------------------------------------------')
+                            tabelaFinal = [['Tipo de Operação', 'Data inicial de busca', 'Data final de busca', 'Uso Proposto', 'País de destino',
+                                            'Número de LPCOs'],
+                                           ['Exportação Vegetal', minhaDataInicio, minhaDataFim, nomeUsoProposto, nomePais, n]]
+                            print(tabulate(tabelaFinal, headers='firstrow', tablefmt='fancy_grid'))
+
+                            df = pd.DataFrame({'Número do LPCO': listaLPCO})
+                            print(df.to_numpy())
+
+                            if n == 0:
+                                print(
+                                    "Não foram encontradas LPCOs registradas para o uso proposto que contenha {}, coletivamente para o país de destino {},\nno período entre {} e {}.".format(qualUsoProposto.upper(),
+                                        qualPais.upper(), minhaDataInicio, minhaDataFim))
+
+                        buscaExportacaoVegetalCombinada2(qualUsoProposto, qualPais, dataInicio, dataFim)
+
+                        sleep(1)
+
+                        pergunta5 = input("Deseja voltar ao menu da Exportação Vegetal?\nDigite 'S' para voltar:\n").lower()
+
+                        if pergunta5 != 's':
+                            menuVegetal = False
+
+                    elif tipoPesquisa == 9:
                         menuAnimalVegetal = False
                         menuVegetal = False
 
